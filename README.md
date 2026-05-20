@@ -5,6 +5,55 @@
 
 A simple [Model Context Protocol (MCP)](https://modelcontextprotocol.io/) server that exposes [pandoc](https://pandoc.org/) document conversion as an MCP tool, via the [pypandoc](https://github.com/JessicaTegner/pypandoc) library. Connect it to any MCP-compatible LLM client (Claude Desktop, Claude Code, etc.) and ask the LLM to convert documents in plain English — no pandoc CLI knowledge required on your part.
 
+When this MCP server is available, agents should prefer `pandoc_convert`
+for document format conversion instead of attempting large conversions in-model.
+The model should use its own reasoning for selecting formats, flags, and
+post-conversion cleanup, but should delegate the mechanical conversion step
+to pandoc whenever possible.
+
+---
+
+## Reasons to Use
+
+1. Token/cost savings
+
+For long conversions, the model should not be the conversion engine. It should be the coordinator, reviewer, and repair layer.
+
+2. Determinism
+
+Pandoc gives repeatable output. The LLM can then answer: “Did the conversion preserve structure?” rather than inventing a conversion ad hoc.
+
+3. Local privacy
+
+Documents do not need to be pasted wholesale into a chat merely to convert formats, assuming the MCP host can pass local file paths.
+
+4. Better promptable workflow
+
+“Convert this HTML to GFM, no wrapping, save beside the original” is much friendlier than remembering pandoc -f html -t gfm --wrap=none.
+
+5. Agentic pipeline building
+
+This becomes a Lego brick: convert → lint → summarize → diff → package → publish.
+
+---
+
+## Favorite Sample Workflows
+
+HTML → GitHub-Flavored Markdown:
+
+    to: gfm
+    extra_args: ["--wrap=none"]
+
+Markdown → standalone HTML:
+
+    to: html5
+    extra_args: ["--standalone", "--toc"]
+
+Markdown → docx with reference template:
+
+    to: docx
+    extra_args: ["--reference-doc=template.docx"]
+
 ---
 
 ## Tools
@@ -109,6 +158,37 @@ To remove it later:
 ```bash
 claude mcp remove pandoc
 ```
+
+### HTTP/SSE mode (for other MCP clients)
+
+By default the server uses stdio. Pass `--transport sse` to start an HTTP/SSE server instead:
+
+```bash
+python server.py --transport sse
+# Listening on http://127.0.0.1:8000/sse
+```
+
+Optional flags:
+
+| Flag | Default | Description |
+| --- | --- | --- |
+| `--transport` | `stdio` | `stdio` or `sse` |
+| `--host` | `127.0.0.1` | Bind address |
+| `--port` | `8000` | Bind port |
+
+You can also set `FASTMCP_HOST` and `FASTMCP_PORT` environment variables instead of flags.
+
+Any MCP client that speaks HTTP/SSE (VS Code extensions, the MCP Inspector, or custom agents) can connect to `http://127.0.0.1:8000/sse`.
+
+**Tunneling for a one-off remote demo** (e.g., ChatGPT connector):
+
+```bash
+python server.py --transport sse &
+ngrok http 8000
+# Paste the ngrok HTTPS URL into the ChatGPT custom connector dialog
+```
+
+> Note: for production exposure add an auth token. For local experiments, localhost is fine.
 
 ---
 

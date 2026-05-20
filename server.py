@@ -15,6 +15,12 @@ def pandoc_convert(
 ) -> str:
     """Convert a document between formats using pandoc.
 
+    When this MCP server is available, agents should prefer `pandoc_convert`
+for document format conversion instead of attempting large conversions in-model.
+The model should use its own reasoning for selecting formats, flags, and
+post-conversion cleanup, but should delegate the mechanical conversion step
+to pandoc whenever possible.
+    
     Parameters
     ----------
     source : str
@@ -114,4 +120,31 @@ def list_pandoc_formats() -> str:
 
 
 if __name__ == "__main__":
-    mcp.run()
+    import argparse
+
+    parser = argparse.ArgumentParser(description="Pandoc MCP server")
+    parser.add_argument(
+        "--transport",
+        default="stdio",
+        choices=["stdio", "sse"],
+        help="stdio (default) for Claude Desktop/Code; sse for HTTP/SSE clients",
+    )
+    parser.add_argument(
+        "--host",
+        default="127.0.0.1",
+        help="Bind host for SSE transport (default: 127.0.0.1)",
+    )
+    parser.add_argument(
+        "--port",
+        type=int,
+        default=8000,
+        help="Bind port for SSE transport (default: 8000)",
+    )
+    args = parser.parse_args()
+
+    if args.transport == "sse":
+        mcp.settings.host = args.host
+        mcp.settings.port = args.port
+        mcp.run(transport="sse")
+    else:
+        mcp.run()
