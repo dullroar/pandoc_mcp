@@ -35,6 +35,29 @@ Documents do not need to be pasted wholesale into a chat merely to convert forma
 
 This becomes a Lego brick: convert → lint → summarize → diff → package → publish.
 
+6. Built-in bulk operations — no loops needed
+
+`pandoc_convert` accepts a glob pattern for `source`. Supply a directory path as `output_file` and the tool converts every matched document internally. The LLM makes one tool call instead of N.
+
+---
+
+## Bulk Operations
+
+`pandoc_convert` accepts a **glob pattern** for `source` (when `source_is_file=True`). Set `output_file` to a **directory path** (e.g. `”html/”`) — the tool expands the glob, converts every match, and writes each result using the appropriate extension for the target format.
+
+```python
+# Convert every Markdown file to standalone HTML — one call, no loop
+pandoc_convert(“docs/*.md”, to=”html5”, output_file=”html/”, extra_args=[“--standalone”])
+
+# Convert every HTML file to GitHub-Flavored Markdown — one call, no loop
+pandoc_convert(“site/*.html”, to=”gfm”, output_file=”markdown/”, extra_args=[“--wrap=none”])
+
+# Convert every RST file to Word — one call, no loop
+pandoc_convert(“reports/*.rst”, to=”docx”, output_file=”word/”)
+```
+
+The output directory is created automatically if it does not exist. The output file extension is inferred from the `to` format (e.g. `gfm` → `.md`, `docx` → `.docx`, `html5` → `.html`).
+
 ---
 
 ## Favorite Sample Workflows
@@ -197,8 +220,10 @@ ngrok http 8000
 Once connected to a Claude client, you can ask naturally:
 
 - *"Convert report.html to GitHub-Flavored Markdown and save it as report.md. Disable line wrapping."*
+- *"Convert all the HTML files in site/ to Markdown and put them in markdown/. Disable line wrapping."*
 - *"Turn this Markdown text into a standalone HTML page with a table of contents."*
 - *"Convert draft.md to a Word document using my template.docx as the reference doc."*
+- *"Convert all the Markdown files in drafts/ to Word documents and put them in word/."*
 - *"What output formats does pandoc support on this machine?"*
 - *"Convert all the content I just pasted (it's reStructuredText) to plain Markdown."*
 
