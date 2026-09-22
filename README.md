@@ -1,5 +1,7 @@
 # pandoc-mcp
 
+For the conversion-boundary design and constraints, see [DESIGN.md](DESIGN.md).
+
 **Author:** Jim Lehmer  
 **License:** MIT
 
