@@ -48,3 +48,4 @@ htmlcov/
 
 # LLMs
 .claude/
+__pycache__/

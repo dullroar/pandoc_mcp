@@ -1,6 +1,6 @@
 # pandoc-mcp
 
-For the conversion-boundary design and constraints, see [DESIGN.md](DESIGN.md).
+For the conversion-boundary design and constraints, see [docs/design/](docs/design/README.md).
 
 **Author:** Jim Lehmer  
 **License:** MIT
