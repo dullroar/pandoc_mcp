@@ -106,7 +106,7 @@ Returns all input and output formats supported by the locally installed pandoc v
 
 - Python 3.10+
 - [pandoc](https://pandoc.org/installing.html) installed and on your `PATH`
-- Python packages: `mcp[cli]`, `pypandoc`
+- Python packages: `mcp[cli]` (version 1), `pypandoc`
 
 ---
 
@@ -121,7 +121,7 @@ python -m venv .venv
 .venv\Scripts\activate        # Windows
 # source .venv/bin/activate   # macOS/Linux
 
-pip install -r requirements.txt
+pip install -r requirements.txt "mcp<2"
 ```
 
 ---
@@ -240,6 +240,33 @@ mcp dev server.py
 ```
 
 This opens a browser-based inspector where you can call tools manually and inspect inputs/outputs before wiring up a full client.
+
+## Build and test with Docker
+
+Use a Docker engine for Linux containers. The test script also needs Bash, Git, and GNU tar.
+The build downloads Ubuntu packages and the Python dependencies in `requirements.txt`.
+The test runs as an unprivileged user with no network access. It checks MCP stdio,
+Pandoc format discovery, inline and local file conversion, and the repository context.
+
+From the repository root, run:
+
+```bash
+docker build --tag pandoc-mcp:local .
+bash scripts/test_docker.sh
+```
+
+The test script takes the current contents of files listed in Git. Add new project files to
+Git before running the script so it includes them. It works from a linked Git worktree.
+The image starts the stdio server by default. For an MCP client that starts the image, use
+`docker run --rm -i pandoc-mcp:local`. PDF output can require a separate PDF engine such as
+LaTeX, depending on the selected Pandoc options.
+
+To run the migration plan with [ralph-looper](https://github.com/dullroar/ralph-looper), use
+the checkout that contains the committed plan:
+
+```bash
+ralph-looper --repo . --plan ralphify --agent codex
+```
 
 ---
 

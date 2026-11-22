@@ -1,6 +1,6 @@
 ---
 id: 02-build-and-test
-status: pending
+status: done
 depends_on: [01-adopt-context]
 touches:
   - Dockerfile
@@ -14,7 +14,9 @@ touches:
 lane: none
 requirements: [R2]
 gate: bash scripts/test_docker.sh && python3 scripts/check_context.py && git diff --check
-evidence: ""
+evidence: gate passed 2026-11-22 (driver-verified)
+claimed_by: codex cli-default
+claimed_at: "2026-11-22T22:04:55Z"
 ---
 
 # 02-build-and-test
@@ -28,3 +30,12 @@ Touches `Dockerfile`, `.dockerignore`, `README.md`, `scripts/test_docker.sh`, ge
 ## Repository gate
 
 Install Pandoc and the existing Python requirements. Add a stdio test under `tests/` that initializes, lists tools and formats, and converts an inline fixture to a different format. Assert actual converted content. Keep the documented stdio host entry point and any optional format requirements. Use local files for file conversion tests.
+
+## Verification
+
+- On 2026-11-22 UTC, the full gate returned exit code 0 from the linked step worktree.
+- The Docker test passed with Pandoc 3.1.3 and MCP SDK 1.30.0. It checked MCP initialization,
+  tool and format discovery, and HTML output for inline and local file fixtures.
+- All four context checks passed both in the image and on the host. The Git whitespace check passed.
+- The first build installed MCP SDK 2.3.0, which removed the FastMCP import used by the server.
+  The Docker and documented host install commands use `mcp<2` with the existing requirements file.

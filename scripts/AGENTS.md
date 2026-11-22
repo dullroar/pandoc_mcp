@@ -29,5 +29,7 @@ Read the list. Run only the scripts whose "Run me when" line matches your task.
   Run me when: using an existing command that scans context for secrets.
 * [scan_secrets.py](./scan_secrets.py)
   Run me when: I changed AGENTS.md, CLAUDE.md, docs/, memory/ or plans/, and before every pull request.
+* [test_docker.sh](./test_docker.sh)
+  Run me when: testing Pandoc conversion and context checks in Docker.
 
 <!-- END GENERATED INDEX -->

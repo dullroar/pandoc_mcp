@@ -10,3 +10,5 @@ jobs:
       - uses: actions/checkout@v4
       - name: Check indexes, plans, links and secrets
         run: python3 scripts/check_context.py
+      - name: Test Pandoc MCP in Docker
+        run: bash scripts/test_docker.sh
