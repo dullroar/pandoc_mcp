@@ -1,0 +1,21 @@
+# Exclude local configuration and generated files from manual builds.
+.git
+.agents
+.aws
+.claude
+.codex
+.idea
+.vscode
+**/.env
+**/.env.*
+.venv
+venv
+env
+ENV
+**/__pycache__
+**/*.pyc
+.pytest_cache
+.coverage
+htmlcov
+build
+dist
