@@ -1,13 +1,15 @@
 ---
 id: 03-verify-integration
-status: pending
+status: done
 depends_on: [02-build-and-test]
 touches:
   - plans/ralphify/steps/03-verify-integration.md
 lane: none
 requirements: [R3]
 gate: python3 scripts/check_context.py && bash scripts/test_docker.sh && git diff --check
-evidence: ""
+evidence: gate passed 2026-11-22 (driver-verified)
+claimed_by: codex cli-default
+claimed_at: "2026-11-22T22:06:49Z"
 ---
 
 # 03-verify-integration
@@ -24,10 +26,32 @@ Run `git merge-base HEAD plan/ralphify` to identify the integrated base commit. 
 
 ## Results
 
-- Base commit: PENDING
-- Commands: PENDING
-- Docker build: PENDING
-- Tests: PENDING
-- Skips: PENDING
-- FUSE: PENDING
-- UTC date: PENDING
+- Base commit: `52c243d440b7590117172b30b6983e678347731e` from `git merge-base HEAD plan/ralphify`.
+- Commands: PASS. `python3 scripts/check_context.py && bash scripts/test_docker.sh && git diff --check`
+  returned exit code 0. The sandbox denied access to the Docker socket. The same gate passed with
+  local Docker access.
+- Docker build: PASS. The gate built `pandoc-mcp-test:ujEjHnVt` from the worktree snapshot and ran
+  it with `--network none`. The README build also passed with
+  `docker build --tag pandoc-mcp-readme:AVrydYrN .`. The README image contained Pandoc 3.1.3 and
+  MCP SDK 1.30.0. Its default command was `python server.py` and its user was `pandoc-mcp`.
+- Tests: PASS. `python -m unittest discover -s tests -v` ran one test. It initialized an MCP stdio
+  session, found both tools, found Markdown input and HTML5 output, and checked the exact HTML for
+  an inline Markdown fixture and a local Markdown file. The four context checks passed on the
+  host and inside Docker. The Git whitespace check passed.
+- Skips: None. The gate requires no opt-in tests. PDF output can require a separate PDF engine,
+  as the README states.
+- FUSE: n/a.
+- UTC date: 2026-11-22.
+
+## Documentation and entry points
+
+- PASS. Both upstream links in `AGENTS.md` returned HTTP 200. The structural-change rule requires
+  agents to read both projects and account for their layout, plan format, generated indexes,
+  worktree rules and validation commands.
+- PASS. The README Docker test command ran in the gate. In the README image,
+  `python server.py --help` confirmed the stdio default and the SSE, host and port options.
+  The stdio test launched the documented Python entry point.
+- The README command `ralph-looper --repo . --plan ralphify --agent codex` matched the runner's
+  documented options. A separate `--status` invocation from the child worktree could not create
+  its runtime directory or open the plan branch, which was already in use by the driver's plan
+  worktree. The running driver owns the plan invocation and final verification.
