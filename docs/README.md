@@ -1,10 +1,8 @@
-# Documentation index
+# Documents
 
-Open only the document whose **Read when** line matches the task.
+This folder holds design notes, references and guides. Add an entry when you add a document.
 
-<!-- BEGIN GENERATED CONTEXT INDEX -->
-
-* [design/README.md](./design/README.md).
-  Read when: changing the repository's design, boundaries or dependencies, or before simplifying a deliberate seam.
-
-<!-- END GENERATED CONTEXT INDEX -->
+| File | When to read it |
+| --- | --- |
+| [Architecture premises](./design/README.md) | Read when you change the design, boundaries or dependencies, or simplify a deliberate seam. |
+| [ralph-looper](https://github.com/dullroar/ralph-looper) | Read when you run a plan through the Ralph loop. |
