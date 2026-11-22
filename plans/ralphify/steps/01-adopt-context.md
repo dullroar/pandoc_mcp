@@ -1,6 +1,6 @@
 ---
 id: 01-adopt-context
-status: pending
+status: done
 depends_on: []
 touches:
   - AGENTS.md
@@ -27,7 +27,7 @@ touches:
 lane: none
 requirements: [R1]
 gate: python3 scripts/build_indexes.py --check && python3 scripts/check_context.py && git diff --check
-evidence: ""
+evidence: "PASS on 2026-11-22 UTC. python3 scripts/build_indexes.py --check && python3 scripts/check_context.py && git diff --check"
 ---
 
 # 01-adopt-context
@@ -41,3 +41,13 @@ Adopt `docs/README.md`, `memory/AGENTS.md`, `plans/AGENTS.md`, `scripts/AGENTS.m
 Touches the agent contracts, the relevant index and checker files, current plan templates, references to the old layout, `.github/workflows/context.yml`, and this step file. Review the exact layout diff and test that broken links, stale indexes, malformed active plans, and the existing secret scan still fail their checks. Gate: `python3 scripts/build_indexes.py --check && python3 scripts/check_context.py && git diff --check`.
 
 Use `main` as the workflow base branch. Copy the pinned inputs from `plans/ralphify/template-inputs/`. Remove the final `.txt` suffix on copy.
+
+## Verification
+
+- The gate returned exit code 0. All four context checks passed.
+- A standalone source copy passed the context check, the two compatibility commands and the
+  full Markdown link check. A plan copied from the new template also passed after index generation.
+- In the source copy, the checks returned exit code 1 for a broken link, a stale memory index,
+  a stale design index, an unknown step dependency, an unknown requirement and a synthetic
+  private-key header. The legacy scanner also rejected the header.
+- All three archived template files match their original bytes.

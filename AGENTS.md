@@ -2,41 +2,62 @@
 
 An MCP-facing conversion boundary around Pandoc, via pypandoc.
 
+## Standing rules
+
+- Start work on a branch. Use a separate worktree for each plan and for each step that runs in
+  parallel. Do not commit to `main`.
+- Do not put credentials, personal data, personal paths, private host names or sensitive record
+  examples in tracked files. Use placeholders and aggregate evidence. Keep runtime output outside
+  the repository.
+- Write in Simplified Technical English. Use short sentences, active voice and consistent terms.
+- Do not push, publish, force-push or add a remote without authorization.
+- User instructions come first. When sources conflict, use this order. Read this file before
+  `docs/design/`, then the named plan, domain documentation and references, `memory/`,
+  implementation and tests, and historical notes.
+
 ## Load context in this order
 
 1. Read this file.
-2. Read the short indexes in full: `README.md`, `docs/README.md`, `memory/README.md`, `scripts/README.md`.
-3. Match the task against each index's **Read when** entries and open only matching documents.
-4. For a large file, search its headings and read only the relevant ranges.
-5. Stop loading when the decision, intended files, constraints and validation method are known.
+2. Read the short indexes in full. Start with [README.md](./README.md) and [docs/README.md](./docs/README.md).
+   Then read [memory/AGENTS.md](./memory/AGENTS.md), [plans/AGENTS.md](./plans/AGENTS.md) and
+   [scripts/AGENTS.md](./scripts/AGENTS.md).
+3. Match the task to the **Read when**, **Read me when** and **Run me when** entries.
+   Open only matching documents. For a large file, search its headings and read the relevant ranges.
+4. Stop when you know the decision, files, constraints and validation method.
 
-User instructions take precedence over repository guidance. When sources conflict, prefer: user
-instruction, this file, `docs/design/`, the named plan, domain documentation and references,
-`memory/`, implementation and tests, historical notes.
+## Repository structure
 
-## Context ownership
+Before changing this repository's structure, read [repo-template](https://github.com/dullroar/repo-template)
+and [ralph-looper](https://github.com/dullroar/ralph-looper). Account for their layout, plan format,
+generated indexes, worktree rules, and validation commands in the change.
 
-- Universal rules belong here.
-- Architectural reasons belong in `docs/design/` (one premise per file).
-- Non-obvious findings that cost time to discover belong in `memory/` (one topic per file; edit the existing topic, do not append a rival).
-- Execution state belongs in `plans/`; deterministic automation in `scripts/`.
-- Every routed Markdown file starts with `gist: "Read when: ..."` front matter. Do not hand-edit the generated section of an index; run `python scripts/build_context_indexes.py`.
+| Path | Contents |
+| --- | --- |
+| `docs/` | Human documentation. Put architectural reasons in `docs/design/`, one premise per file. |
+| `memory/` | Non-obvious findings that cost time to discover. Keep one file per topic. Edit the existing topic. |
+| `plans/` | Plan requirements, steps and execution state. |
+| `scripts/` | Deterministic automation for agents and CI. |
 
-Do not duplicate a fact across layers. Correct its canonical source.
+Keep each fact in its source file. Routed Markdown starts with a `gist` in front matter.
+Each script starts with a **Run me when** line. Run `python3 scripts/build_indexes.py` after changes
+to routed files. Edit the generated sections through the script.
 
-## Planned work (spec-driven)
+## Planned work
 
-- Work only on a named plan in `plans/<plan>/` (`spec.md` plus `steps/`) or an explicitly identified off-plan task. Copy `plans/TEMPLATE/` to start one.
-- Once its spec is approved, proceed through the steps without asking permission for routine work. Failed tests and dead ends inside scope: diagnose, repair, continue. Return to the user only for a new decision: contradictory requirements, scope expansion, or an action outside the spec's delegated authority.
-- Acceptance checks named in the spec are protected. Never weaken, skip or delete one to get green; if one cannot pass as written, escalate.
-- Parallel steps must have no dependency between them and no overlapping `touches`; if independence is uncertain, serialize. After parallel steps merge, run the spec's combined validation.
-- A step is done only with recorded evidence. Report unavailable verification honestly.
-- Retiring a rule, correcting documentation, and tolerating a known violation are different outcomes; record which one (see `plans/TEMPLATE/spec.md`).
+- Work on a named plan or an explicitly identified off-plan task. Copy
+  [plans/for-each-plan/](./plans/for-each-plan/) to start a plan.
+- Approve the requirements and protected checks in `spec.md` before execution. Proceed through the
+  approved steps without asking for routine decisions. Diagnose and fix failures within scope.
+- Escalate contradictions, scope changes, actions outside delegated authority and protected checks
+  that cannot pass as written. Never weaken, skip or delete a protected check to make it pass.
+- Run steps in parallel only when there is no dependency and their `touches` do not overlap.
+  If independence is uncertain, run the steps in order. After parallel steps merge, run the combined
+  validation in the spec.
+- Record evidence before you mark a step complete. Report unavailable verification in the step.
+- Record the type of rule change. Distinguish rule retirement, documentation correction and a
+  tolerated violation. See the [spec template](./plans/for-each-plan/spec.md#exceptions-and-retirements).
 
 ## Validation
 
-Run the smallest check that proves the change, then `python scripts/check_context.py` for any change to context files.
-
-## Safety
-
-Do not commit credentials, personal data, personal filesystem paths or sensitive record-level examples. Use placeholders and aggregate evidence. Do not push, publish, force-push or add a remote without authorization.
+Run the smallest check that proves the change. For a context change, run
+`python3 scripts/check_context.py`.
