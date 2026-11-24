@@ -1,6 +1,6 @@
 ---
 id: a02-apply
-status: pending
+status: done
 depends_on: [a01-audit]
 touches:
   - scripts/check_context.py
@@ -19,7 +19,7 @@ gate: python3 scripts/check_context.py && python3 scripts/build_indexes.py --che
 requirements: [R2]
 claimed_by: ""
 claimed_at: ""
-evidence: ""
+evidence: "2026-11-24: check_context.py, build_indexes.py --check and secret_guard.py --tracked pass in session. Docker part of the gate not run here (no Docker); driver runs it."
 ---
 
 # Adopt the pinned library in advisory mode
@@ -60,4 +60,4 @@ If you cannot finish, write "Resume notes" below. Keep the status `in_progress`.
 
 ## Resume notes
 
-(none)
+Docker was not run in this session (no Docker access). The driver must run `bash scripts/test_docker.sh`. The Dockerfile change (git and shim cache at build time) is untested in a container.
