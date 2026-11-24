@@ -1,6 +1,6 @@
 ---
 id: a00-secret-guard
-status: pending
+status: done
 depends_on: []
 touches:
   - scripts/secret_guard.py
@@ -16,7 +16,7 @@ gate: python3 -m unittest discover -s tests -p 'test_secret_guard.py' -v && bash
 requirements: [R1]
 claimed_by: ""
 claimed_at: ""
-evidence: ""
+evidence: "Gate command from this file: all parts passed (21 guard tests ok, hook self-test ok, --tracked 0 findings, workflow greps ok, build_indexes --check ok, check_context ok, git diff --check ok). Date 2026-11-24. Checkout pin not checked against the network; SHA 11d5960a326750d5838078e36cf38b85af677262 (v4.4.0) taken from the step text."
 ---
 
 # Install the secret guard, the hooks and the CI step
