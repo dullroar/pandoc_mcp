@@ -1,6 +1,6 @@
 ---
 id: a03-probes
-status: pending
+status: done
 depends_on: [a02-apply]
 touches:
   - docs/controls-adoption.md
@@ -10,7 +10,7 @@ gate: python3 scripts/check_context.py && python3 scripts/build_indexes.py --che
 requirements: [R3]
 claimed_by: ""
 claimed_at: ""
-evidence: ""
+evidence: "2026-11-24 UTC: six probes failed with the expected rule IDs (internal error exit 3, shim exit 1); clean copy exit 0; rollback tested on the base commit and on HEAD; receipt recorded in docs/controls-adoption.md. Gate: check_context, build_indexes --check, secret_guard --tracked, grep checks, git diff --check."
 ---
 
 # Prove the controls with known-bad probes, test the rollback and write the receipt
